@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "/api";
 
 export function useAgentStream(threadId: string, message: string, restaurantId: string) {
   const [events, setEvents] = useState<any[]>([]);
