@@ -1,0 +1,5 @@
+[
+  {"query": "what's running low on stock", "expected_agent": "inventory_agent"},
+  {"query": "what will we sell tomorrow", "expected_agent": "forecast_agent"},
+  {"query": "how much revenue last week", "expected_agent": "analytics_agent"}
+]
