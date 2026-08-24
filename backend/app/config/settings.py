@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     langchain_api_key: str = ""
     langchain_tracing_v2: bool = False
     langchain_project: str = "restaurant-mgr-dev"
+    frontend_url: str = ""
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parents[2] / ".env",
