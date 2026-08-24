@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.api.routes import inventory
 from app.api.routes import chat
 from app.api.routes import approvals
+from app.api.routes import runs
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(title="Restaurant AI Manager")
 
@@ -14,6 +15,7 @@ app.add_middleware(
 app.include_router(inventory.router, prefix="/api")
 app.include_router(chat.router, prefix="/api")
 app.include_router(approvals.router, prefix="/api")
+app.include_router(runs.router, prefix="/api")
 
 
 

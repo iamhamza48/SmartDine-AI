@@ -37,6 +37,8 @@ Thumbs.db
 # ML generated artifacts
 *.pkl
 *.joblib
+!ml/models/
+!ml/models/forecast_model.pkl
 
 # Build / distribution
 dist/
