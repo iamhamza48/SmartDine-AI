@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --background: #101417;
+  --foreground: #f4f1e8;
+  --panel: #182025;
+  --panel-strong: #202a30;
+  --muted: #aeb9ba;
+  --line: #405055;
+  --accent: #f0b35b;
+  --success: #8ed1a7;
+  --danger: #f08e83;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), sans-serif;
+  margin: 0;
+}
+
+.dashboard-shell {
+  width: min(100% - 2rem, 52rem);
+  margin: 0 auto;
+  padding: 4.5rem 0 5rem;
+}
+
+.page-header { margin-bottom: 2rem; }
+.page-header h1 { margin: 0.35rem 0 0; font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1.05; letter-spacing: 0; }
+.eyebrow { color: var(--accent); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; margin: 0; text-transform: uppercase; }
+.subtitle { color: var(--muted); line-height: 1.6; margin: 1rem 0 0; max-width: 42rem; }
+.ask-bar { display: flex; gap: 0.75rem; }
+.ask-input { background: var(--panel); border: 1px solid var(--line); border-radius: 0.35rem; color: var(--foreground); flex: 1; font: inherit; min-width: 0; padding: 0.9rem 1rem; }
+.ask-input::placeholder { color: #849294; }
+.ask-input:focus { border-color: var(--accent); outline: 2px solid #f0b35b33; }
+.send-button, .approve-button { background: var(--accent); border: 0; border-radius: 0.35rem; color: #17130d; cursor: pointer; font: inherit; font-weight: 700; padding: 0 1.1rem; }
+.send-button:disabled, .approve-button:disabled { cursor: wait; opacity: 0.6; }
+.error-message { background: #3a211f; border-left: 3px solid var(--danger); color: #ffd0c9; margin: 1rem 0 0; padding: 0.8rem 1rem; }
+.results-stack { display: grid; gap: 1rem; margin-top: 1.5rem; }
+.response-panel, .approval-card { background: var(--panel); border: 1px solid var(--line); border-radius: 0.45rem; padding: 1.35rem; }
+.response-text { color: #f4f1e8; font-family: var(--font-geist-mono), monospace; line-height: 1.7; margin: 0.8rem 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.response-intro { color: var(--muted); margin: 1rem 0; }
+.response-intro strong { color: var(--foreground); }
+.response-table-wrap { overflow-x: auto; }
+.response-table { border-collapse: collapse; min-width: 34rem; width: 100%; }
+.response-table th { color: var(--muted); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.7rem 0.65rem; text-align: left; text-transform: uppercase; }
+.response-table td { border-top: 1px solid #334146; padding: 0.85rem 0.65rem; }
+.response-table th:not(:first-child), .response-table td:not(:first-child) { text-align: right; }
+.response-total { align-items: center; border-top: 1px solid var(--line); display: flex; justify-content: space-between; margin: 1rem 0 0; padding: 1rem 0 0; }
+.response-total strong { color: var(--accent); font-size: 1.35rem; }
+.approval-card { background: var(--panel-strong); border-color: #b47b38; }
+.approval-heading { align-items: flex-start; display: flex; gap: 1rem; justify-content: space-between; }
+.approval-heading h2 { font-size: 1.25rem; margin: 0.35rem 0 0; }
+.pending-badge { background: #5d421f; border-radius: 999px; color: #ffd58d; font-size: 0.72rem; font-weight: 700; padding: 0.4rem 0.65rem; white-space: nowrap; }
+.supplier { color: var(--muted); margin: 1.2rem 0 0; }
+.supplier strong { color: var(--foreground); }
+.order-items { border-bottom: 1px solid var(--line); border-top: 1px solid var(--line); list-style: none; margin: 1rem 0; padding: 0; }
+.order-items li, .order-total { align-items: center; display: flex; justify-content: space-between; padding: 0.8rem 0; }
+.order-items li + li { border-top: 1px solid #334146; }
+.order-items li > span:last-child { color: var(--foreground); text-align: right; }
+.order-items small { color: var(--muted); }
+.order-total { margin: 0 0 1rem; }
+.order-total strong { color: var(--accent); font-size: 1.25rem; }
+.approved-status { color: var(--success); font-weight: 700; margin: 0; }
+
+@media (max-width: 560px) {
+  .dashboard-shell { padding-top: 2.5rem; }
+  .ask-bar { align-items: stretch; flex-direction: column; }
+  .send-button { min-height: 3rem; padding: 0 1rem; }
+  .approval-heading { flex-direction: column; }
+}
