@@ -24,9 +24,10 @@ class PurchaseOrderDraft(BaseModel):
 
 
 def draft_order(state: AgentState):
+    user_message = state["messages"][-1].content
     response = client.models.generate_content(
         model=MODEL,
-        contents="Draft a purchase order: Chicken 8kg at $5.25/kg, Rice 7kg at $2.50/kg, from Fresh Foods Ltd.",
+        contents=f"Draft a purchase order based on this restaurant manager request: {user_message}",
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
             response_schema=PurchaseOrderDraft,
@@ -39,6 +40,31 @@ def draft_order(state: AgentState):
         "draft_order": draft.model_dump(),
         "approval_requested": True,
     }
+
+
+def answer_question(state: AgentState):
+    user_message = state["messages"][-1].content
+    response = llm.invoke(
+        [
+            (
+                "system",
+                "You are an AI restaurant operations manager. Answer the user's request clearly and concisely. "
+                "Do not invent inventory values, orders, or business data. If required data is unavailable, say so.",
+            ),
+            ("user", user_message),
+        ]
+    )
+    return {
+        "messages": [{"role": "assistant", "content": response.content}],
+        "draft_order": None,
+        "approval_requested": False,
+    }
+
+
+def route_request(state: AgentState):
+    user_message = state["messages"][-1].content.lower()
+    order_terms = ("purchase order", "place an order", "create an order", "order supplies")
+    return "draft_order" if any(term in user_message for term in order_terms) else "answer_question"
 
 
 def request_approval(state: AgentState):
@@ -60,9 +86,11 @@ def request_approval(state: AgentState):
 
 graph = StateGraph(AgentState)
 graph.add_node("draft_order", draft_order)
+graph.add_node("answer_question", answer_question)
 graph.add_node("request_approval", request_approval)
-graph.set_entry_point("draft_order")
+graph.set_conditional_entry_point(route_request)
 graph.add_edge("draft_order", "request_approval")
+graph.add_edge("answer_question", END)
 graph.add_edge("request_approval", END)
 
 checkpointer = InMemorySaver()
