@@ -1,4 +1,5 @@
 import logging
+import json
 
 from fastapi import APIRouter
 from langgraph.checkpoint.memory import InMemorySaver
@@ -17,6 +18,22 @@ class ChatRequest(BaseModel):
     thread_id: str
     message: str
     restaurant_id: str
+
+
+def content_to_text(content) -> str:
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        text_parts = [
+            item.get("text", "")
+            for item in content
+            if isinstance(item, dict) and isinstance(item.get("text"), str)
+        ]
+        if text_parts:
+            return "\n".join(text_parts)
+    if isinstance(content, dict) and isinstance(content.get("text"), str):
+        return content["text"]
+    return json.dumps(content, default=str)
 
 
 @router.post("/chat")
@@ -42,7 +59,7 @@ def chat(payload: ChatRequest):
     values = state.values
 
     return {
-        "response": result["messages"][-1].content,
+        "response": content_to_text(result["messages"][-1].content),
         "draft_order": values.get("draft_order"),
         "approval_requested": values.get("approval_requested", False),
     }

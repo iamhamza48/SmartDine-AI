@@ -11,9 +11,24 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const restaurantId = "5c3f04ac-b83a-4720-84e6-3e9f9561f8e3"; // swap for the real one from Supabase
 
-  function parsePurchaseOrder(response: string): PurchaseOrder | null {
+  function responseToText(response: unknown): string {
+    if (typeof response === "string") return response;
+    if (Array.isArray(response)) {
+      const text = response
+        .filter((item): item is { text: string } => typeof item === "object" && item !== null && "text" in item && typeof item.text === "string")
+        .map((item) => item.text)
+        .join("\n");
+      if (text) return text;
+    }
+    if (typeof response === "object" && response !== null && "text" in response && typeof response.text === "string") {
+      return response.text;
+    }
+    return JSON.stringify(response);
+  }
+
+  function parsePurchaseOrder(response: unknown): PurchaseOrder | null {
     try {
-      const parsed = JSON.parse(response) as PurchaseOrder;
+      const parsed = typeof response === "string" ? JSON.parse(response) as PurchaseOrder : response as PurchaseOrder;
       if (!parsed.supplier_name || !Array.isArray(parsed.items) || typeof parsed.total_amount !== "number") {
         return null;
       }
@@ -65,7 +80,8 @@ export default function Dashboard() {
           <section className="response-panel">
             <p className="eyebrow">Manager response</p>
             {(() => {
-              const purchaseOrder = parsePurchaseOrder(result.response);
+              const responseText = responseToText(result.response);
+              const purchaseOrder = parsePurchaseOrder(responseText);
 
               return purchaseOrder ? (
                 <div className="response-order">
@@ -95,7 +111,7 @@ export default function Dashboard() {
                   <p className="response-total"><span>Total</span><strong>${purchaseOrder.total_amount.toFixed(2)}</strong></p>
                 </div>
               ) : (
-                <p className="response-text">{result.response}</p>
+                <p className="response-text">{responseText}</p>
               );
             })()}
           </section>
